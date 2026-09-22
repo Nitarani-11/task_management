@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: task-management-app
+    container_name: task-app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    volumes:
+      - .:/var/www
+    networks:
+      - task-network
+
+  webserver:
+    image: nginx:alpine
+    container_name: task-webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - task-network
+
+  db:
+    image: mysql:8.0
+    container_name: task-db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: task_management
+      MYSQL_ROOT_PASSWORD: secret_root_password
+      MYSQL_USER: task_user
+      MYSQL_PASSWORD: task_password
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - task-network
+
+  redis:
+    image: redis:alpine
+    container_name: task-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - task-network
+
+  queue-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: task-queue-worker
+    restart: unless-stopped
+    command: php artisan queue:work --tries=3 --timeout=90
+    volumes:
+      - .:/var/www
+    depends_on:
+      - app
+      - db
+      - redis
+    networks:
+      - task-network
+
+networks:
+  task-network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
