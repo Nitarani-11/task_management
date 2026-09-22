@@ -1,0 +1,66 @@
+<div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+        <div>
+            <h1 style="font-size: 1.8rem; font-weight: 700;">My Assigned Tasks</h1>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">Tasks dynamically matched & assigned to your profile</p>
+        </div>
+
+        <!-- Low Latency Badge (Story 2 Requirement) -->
+        <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-gauge-high"></i>
+            <span>Redis Response Latency: <strong>{{responseTimeMs}} ms</strong> (&lt; 200ms Target)</span>
+        </div>
+    </div>
+
+    <div class="glass-card">
+        <div ng-if="loading" style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+            <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+            <p style="margin-top: 1rem;">Retrieving cached assigned tasks...</p>
+        </div>
+
+        <div ng-if="!loading && assignedTasks.length === 0" style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+            <i class="fa-solid fa-folder-open fa-2x" style="color: var(--text-muted);"></i>
+            <p style="margin-top: 1rem;">No tasks assigned to your profile currently.</p>
+        </div>
+
+        <div class="table-responsive" ng-if="!loading && assignedTasks.length > 0">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Title & Description</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Created By</th>
+                        <th>Due Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="task in assignedTasks">
+                        <td>
+                            <a href="#!/tasks/{{task.id}}" style="font-weight: 600; color: var(--text-primary); text-decoration: none;">
+                                {{task.title}}
+                            </a>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+                                {{task.description | limitTo: 80}}{{task.description.length > 80 ? '...' : ''}}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-priority" ng-class="task.priority">{{task.priority | uppercase}}</span>
+                        </td>
+                        <td>
+                            <span class="badge-status" ng-class="task.status">{{task.status}}</span>
+                        </td>
+                        <td>{{task.creator.name || 'Admin'}}</td>
+                        <td>{{task.due_date ? (task.due_date | date:'shortDate') : 'No due date'}}</td>
+                        <td>
+                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" ng-click="markAsDone(task)" ng-if="task.status !== 'done'">
+                                <i class="fa-solid fa-check"></i> Mark Done
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="logo-icon" style="margin: 0 auto 1rem; width: 50px; height: 50px;">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <h2>Welcome Back</h2>
+            <p>Task Management & Dynamic Rule Assignment Engine</p>
+        </div>
+
+        <div class="alert alert-danger" ng-if="errorMessage" style="background: rgba(239, 68, 68, 0.15); color: #f87171; padding: 12px; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem;">
+            <i class="fa-solid fa-circle-exclamation"></i> {{errorMessage}}
+        </div>
+
+        <form ng-submit="login()">
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-control" ng-model="credentials.email" placeholder="e.g. admin@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" ng-model="credentials.password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;" ng-disabled="loading">
+                <i class="fa-solid fa-right-to-bracket" ng-if="!loading"></i>
+                <i class="fa-solid fa-spinner fa-spin" ng-if="loading"></i>
+                <span>{{loading ? 'Signing In...' : 'Sign In'}}</span>
+            </button>
+        </form>
+
+        <div style="margin-top: 1.5rem; text-align: center;">
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">Quick Demo Fill Credentials:</p>
+            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" ng-click="fillDemo('admin')">Admin</button>
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" ng-click="fillDemo('finance')">Finance User</button>
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" ng-click="fillDemo('manager')">Manager</button>
+            </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
+            Don't have an account? <a href="#!/register" style="color: var(--primary); font-weight: 600;">Register Here</a>
+        </div>
+    </div>
+</div>

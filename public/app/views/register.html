@@ -1,0 +1,60 @@
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>Create Account</h2>
+            <p>Register profile attributes for dynamic task assignment</p>
+        </div>
+
+        <div class="alert alert-danger" ng-if="errorMessage" style="background: rgba(239, 68, 68, 0.15); color: #f87171; padding: 12px; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem;">
+            <i class="fa-solid fa-circle-exclamation"></i> {{errorMessage}}
+        </div>
+
+        <form ng-submit="register()">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" ng-model="user.name" placeholder="John Doe" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-control" ng-model="user.email" placeholder="john@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" ng-model="user.password" placeholder="••••••••" required>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label class="form-label">Department</label>
+                    <select class="form-control" ng-model="user.department" required>
+                        <option value="Finance">Finance</option>
+                        <option value="HR">HR</option>
+                        <option value="IT">IT</option>
+                        <option value="Operation">Operation</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Experience (Years)</label>
+                    <input type="number" min="0" class="form-control" ng-model="user.years_of_experience" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Location</label>
+                <input type="text" class="form-control" ng-model="user.location" placeholder="e.g. Bhubaneswar">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;" ng-disabled="loading">
+                <i class="fa-solid fa-user-plus" ng-if="!loading"></i>
+                <i class="fa-solid fa-spinner fa-spin" ng-if="loading"></i>
+                <span>{{loading ? 'Creating Account...' : 'Register'}}</span>
+            </button>
+        </form>
+
+        <div style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
+            Already have an account? <a href="#!/login" style="color: var(--primary); font-weight: 600;">Sign In</a>
+        </div>
+    </div>
+</div>

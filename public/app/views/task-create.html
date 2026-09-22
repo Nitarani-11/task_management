@@ -1,0 +1,94 @@
+<div>
+    <div style="margin-bottom: 1.5rem;">
+        <h1 style="font-size: 1.8rem; font-weight: 700;">Create Task & Define Assignment Rules</h1>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Story 1 Requirement: Define criteria for automatic rule-based assignment</p>
+    </div>
+
+    <div class="alert alert-danger" ng-if="errorMessage" style="background: rgba(239, 68, 68, 0.15); color: #f87171; padding: 12px; border-radius: 8px; margin-bottom: 1.5rem;">
+        <i class="fa-solid fa-circle-exclamation"></i> {{errorMessage}}
+    </div>
+
+    <form ng-submit="submitTask()">
+        <div class="grid-2">
+            <!-- Task Attributes Card -->
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fa-solid fa-file-pen"></i> Task Details</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Task Title</label>
+                    <input type="text" class="form-control" ng-model="task.title" placeholder="e.g. Audit Quarterly Tax Report" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" ng-model="task.description" rows="4" placeholder="Detailed scope of task work..."></textarea>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <select class="form-control" ng-model="task.priority">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Due Date</label>
+                        <input type="date" class="form-control" ng-model="task.due_date">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Assignment Rule Builder (Story 1 Core Requirement) -->
+            <div class="glass-card" style="background: rgba(99, 102, 241, 0.04); border-color: rgba(99, 102, 241, 0.2);">
+                <div class="card-header">
+                    <div class="card-title" style="color: #a5b4fc;"><i class="fa-solid fa-wand-magic-sparkles"></i> Dynamic Assignment Rules</div>
+                </div>
+
+                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+                    Tasks are not manually assigned. The system will evaluate candidate users matching these rule criteria and assign automatically via queue.
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Target Department</label>
+                    <select class="form-control" ng-model="task.rule.department">
+                        <option value="Finance">Finance</option>
+                        <option value="HR">HR</option>
+                        <option value="IT">IT</option>
+                        <option value="Operation">Operation</option>
+                    </select>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Min Experience (Years)</label>
+                        <input type="number" min="0" class="form-control" ng-model="task.rule.min_experience" placeholder="e.g. 4">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Max Active Tasks Limit</label>
+                        <input type="number" min="1" class="form-control" ng-model="task.rule.max_active_tasks" placeholder="e.g. 5">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Target Location (Optional)</label>
+                    <input type="text" class="form-control" ng-model="task.rule.location" placeholder="e.g. Bhubaneswar">
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+            <a href="#!/tasks" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary" ng-disabled="loading">
+                <i class="fa-solid fa-paper-plane" ng-if="!loading"></i>
+                <i class="fa-solid fa-spinner fa-spin" ng-if="loading"></i>
+                <span>{{loading ? 'Evaluating & Assigning...' : 'Create Task & Run Engine'}}</span>
+            </button>
+        </div>
+    </form>
+</div>

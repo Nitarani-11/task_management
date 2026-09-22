@@ -1,0 +1,105 @@
+<div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+        <div>
+            <h1 style="font-size: 1.8rem; font-weight: 700;">All System Tasks</h1>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">Browse & filter tasks across all departments</p>
+        </div>
+
+        <a href="#!/tasks/create" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> Create Task
+        </a>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="glass-card" style="padding: 1rem 1.5rem; margin-bottom: 1.5rem;">
+        <div class="grid-3">
+            <div>
+                <label class="form-label">Department Filter</label>
+                <select class="form-control" ng-model="filters.department" ng-change="loadTasks()">
+                    <option value="">All Departments</option>
+                    <option value="Finance">Finance</option>
+                    <option value="HR">HR</option>
+                    <option value="IT">IT</option>
+                    <option value="Operation">Operation</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label">Status Filter</label>
+                <select class="form-control" ng-model="filters.status" ng-change="loadTasks()">
+                    <option value="">All Statuses</option>
+                    <option value="todo">Todo</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="done">Done</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label">Priority Filter</label>
+                <select class="form-control" ng-model="filters.priority" ng-change="loadTasks()">
+                    <option value="">All Priorities</option>
+                    <option value="urgent">Urgent</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Table -->
+    <div class="glass-card">
+        <div ng-if="loading" style="text-align: center; padding: 3rem;">
+            <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+        </div>
+
+        <div class="table-responsive" ng-if="!loading">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Department Rule</th>
+                        <th>Assigned To</th>
+                        <th>Assignment Status</th>
+                        <th>Priority</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="task in tasks">
+                        <td>
+                            <a href="#!/tasks/{{task.id}}" style="font-weight: 600; color: var(--text-primary); text-decoration: none;">
+                                {{task.title}}
+                            </a>
+                        </td>
+                        <td>
+                            <span style="background: rgba(99, 102, 241, 0.1); color: #a5b4fc; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem;">
+                                {{task.rule.department || 'Any'}}
+                            </span>
+                        </td>
+                        <td>
+                            <span ng-if="task.assignee" style="color: var(--accent); font-weight: 500;">
+                                <i class="fa-solid fa-user-check"></i> {{task.assignee.name}}
+                            </span>
+                            <span ng-if="!task.assignee" style="color: var(--text-muted); font-style: italic;">
+                                Unassigned
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge-status" ng-class="task.assignment_status">{{task.assignment_status}}</span>
+                        </td>
+                        <td>
+                            <span class="badge-priority" ng-class="task.priority">{{task.priority | uppercase}}</span>
+                        </td>
+                        <td>
+                            <a href="#!/tasks/{{task.id}}" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8rem;">
+                                Details
+                            </a>
+                            <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8rem; color: var(--danger);" ng-click="deleteTask(task.id)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

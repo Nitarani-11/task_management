@@ -1,0 +1,137 @@
+<div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+        <div>
+            <h1 style="font-size: 1.8rem; font-weight: 700;">Task Overview & Matching Engine</h1>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">ID #{{taskId}} • Rule Matching & Audit History</p>
+        </div>
+
+        <a href="#!/tasks" class="btn btn-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Back to Tasks
+        </a>
+    </div>
+
+    <div ng-if="loading" style="text-align: center; padding: 3rem;">
+        <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+    </div>
+
+    <div ng-if="!loading && task">
+        <div class="grid-2">
+            <!-- Task Info Card -->
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fa-solid fa-circle-info"></i> {{task.title}}</div>
+                    <span class="badge-priority" ng-class="task.priority">{{task.priority | uppercase}}</span>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6;">
+                    {{task.description || 'No detailed description provided.'}}
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem;">
+                    <div><strong>Status:</strong> <span class="badge-status" ng-class="task.status">{{task.status}}</span></div>
+                    <div><strong>Assignment Status:</strong> <span class="badge-status" ng-class="task.assignment_status">{{task.assignment_status}}</span></div>
+                    <div><strong>Currently Assigned To:</strong> 
+                        <span ng-if="task.assignee" style="color: var(--accent); font-weight: 600;">
+                            <i class="fa-solid fa-user-check"></i> {{task.assignee.name}} ({{task.assignee.email}})
+                        </span>
+                        <span ng-if="!task.assignee" style="color: var(--warning); font-style: italic;">
+                            No eligible user found (Pending background queue re-evaluation)
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Defined Rule Criteria Card -->
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title" style="color: #a5b4fc;"><i class="fa-solid fa-sliders"></i> Defined Eligibility Rules</div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem;">
+                    <div><strong>Department Requirement:</strong> {{task.rule.department || 'Any'}}</div>
+                    <div><strong>Min Experience Required:</strong> {{task.rule.min_experience ? task.rule.min_experience + ' years' : 'None'}}</div>
+                    <div><strong>Max Active Tasks Limit:</strong> {{task.rule.max_active_tasks || 'Unlimited'}}</div>
+                    <div><strong>Target Location:</strong> {{task.rule.location || 'Any Location'}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Eligible Users Evaluation Table -->
+        <div class="glass-card">
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-users-viewfinder"></i> Candidate Users Evaluated by Rule Engine</div>
+                <span class="badge" style="background: rgba(99, 102, 241, 0.2); color: #a5b4fc; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem;">
+                    {{eligibleUsers.length}} Users Qualified
+                </span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>User Name & Email</th>
+                            <th>Department</th>
+                            <th>Experience</th>
+                            <th>Active Workload</th>
+                            <th>Selection Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="u in eligibleUsers">
+                            <td>
+                                <strong>{{u.name}}</strong>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">{{u.email}}</div>
+                            </td>
+                            <td>{{u.department}}</td>
+                            <td>{{u.years_of_experience}} years</td>
+                            <td>
+                                <strong>{{u.active_tasks_count}}</strong> tasks
+                            </td>
+                            <td>
+                                <span ng-if="u.id === task.assigned_to" style="color: var(--accent); font-weight: 700;">
+                                    <i class="fa-solid fa-check-circle"></i> Assigned (Selected by Workload Strategy)
+                                </span>
+                                <span ng-if="u.id !== task.assigned_to" style="color: var(--text-muted);">
+                                    Qualified Candidate
+                                </span>
+                            </td>
+                        </tr>
+                        <tr ng-if="eligibleUsers.length === 0">
+                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                                No users currently satisfy all rule criteria.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Assignment History Audit Logs -->
+        <div class="glass-card">
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Assignment Audit History</div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Status Event</th>
+                            <th>Assigned User</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="log in task.assignment_logs">
+                            <td>
+                                <span class="badge-status" ng-class="log.status">{{log.status}}</span>
+                            </td>
+                            <td>{{log.user ? log.user.name : 'System'}}</td>
+                            <td>{{log.created_at | date:'medium'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
